@@ -2,61 +2,81 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Controllers
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DisabilityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DisabilityController;
+use App\Http\Controllers\PresidentController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ClassificationController;
+use App\Http\Controllers\PoliciesController;
+use App\Http\Controllers\AssistancesController;
+use App\Http\Controllers\CharityController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes for Flutter Mobile App
-|--------------------------------------------------------------------------
-| These routes return JSON responses and are intended for mobile integration.
-| Authentication is handled using Sanctum.
-*/
+// --------------------------------------------
+// ✅ ANNOUNCEMENTS
+// --------------------------------------------
+Route::get('/announcements', [AnnouncementController::class, 'index']);   // GET all
+Route::post('/announcements', [AnnouncementController::class, 'store']); // CREATE
+Route::put('/announcements/{id}', [AnnouncementController::class, 'update']); // UPDATE
+Route::delete('/announcements/{id}', [AnnouncementController::class, 'destroy']); // DELETE
+Route::patch('/announcements/{id}/attend', [AnnouncementController::class, 'markAsAttended']); // Mark attended
 
-// ✅ PUBLIC AUTH ROUTES (accessible without auth)
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/signup', [AuthController::class, 'register']);
+// --------------------------------------------
+// ✅ REPORTS
+// --------------------------------------------
+Route::get('/reports', [ReportController::class, 'index']);     // GET all reports
+Route::post('/reports', [ReportController::class, 'store']);    // UPLOAD report
+Route::delete('/reports/{id}', [ReportController::class, 'destroy']); // DELETE
+Route::get('/reports/download/{id}', [ReportController::class, 'download']); // DOWNLOAD
 
-// ✅ PROTECTED ROUTES (accessible only with valid token)
-Route::middleware('auth:sanctum')->group(function () {
+// --------------------------------------------
+// ✅ ATTENDANCE
+// --------------------------------------------
+Route::get('/attendance', [AttendanceController::class, 'index']);   // GET all attendance
+Route::post('/attendance', [AttendanceController::class, 'store']); // CREATE attendance
+Route::get('/attendance/history/{announcement}', [AttendanceController::class, 'history']); // Attendance history
 
-    // ✅ DISABILITY MODULE
-    Route::get('/disability', [DisabilityController::class, 'index']);                       // Get all disability stats
-    Route::post('/disability', [DisabilityController::class, 'store']);                      // Add new disability record
-    Route::delete('/disability/barangay/{barangayName}', [DisabilityController::class, 'deleteBarangay']); // Delete by barangay
+// --------------------------------------------
+// ✅ CLASSIFICATIONS
+// --------------------------------------------
+Route::get('/classifications', [ClassificationController::class, 'index']);   // GET all
+Route::post('/classifications/store', [ClassificationController::class, 'store']); // ADD classification
 
-    // ✅ ANNOUNCEMENTS
-    Route::get('/announcements', [AnnouncementController::class, 'index']);                  // Get all announcements
-    Route::post('/announcements', [AnnouncementController::class, 'store']);                 // Create new announcement
+// --------------------------------------------
+// ✅ DISABILITY STATS
+// --------------------------------------------
+Route::get('/disability_statistics', [DisabilityController::class, 'index']);
+Route::post('/disability_statistics', [DisabilityController::class, 'store']);
+Route::delete('/disability_statistics/barangay/{barangayName}', [DisabilityController::class, 'deleteBarangay']);
 
-    // ✅ ATTENDANCE
-    Route::post('/attendance', [AttendanceController::class, 'store']);                      // Submit attendance
+// --------------------------------------------
+// ✅ ASSISTANCES (Benefits/Privileges)
+// --------------------------------------------
+Route::get('/assistances', [AssistancesController::class, 'index']);
+Route::post('/assistances', [AssistancesController::class, 'store']);
+Route::get('/assistances/{id}', [AssistancesController::class, 'show']);
+Route::put('/assistances/{id}', [AssistancesController::class, 'update']);
+Route::delete('/assistances/{id}', [AssistancesController::class, 'destroy']);
+Route::post('/assistances/{id}/toggle-status', [AssistancesController::class, 'toggleStatus']);
 
-    // ✅ REPORTS
-    Route::get('/reports', [ReportController::class, 'index']);                              // List reports
-    Route::post('/reports', [ReportController::class, 'store']);                             // Add new report
+// --------------------------------------------
+// ✅ POLICIES
+// --------------------------------------------
+Route::get('/policies', [PoliciesController::class, 'index']);
 
-    // ✅ LOGOUT (optional)
-    Route::post('/logout', [AuthController::class, 'logout']);
-});
+// --------------------------------------------
+// ✅ PRESIDENTS / USERS
+// --------------------------------------------
+Route::post('/presidents', [PresidentController::class, 'store']); // create president
+Route::post('/users', [UserController::class, 'store']);           // create user (PWD)
 
-Route::post('/signup', [AuthController::class, 'register']);  // with role
-Route::post('/login', [AuthController::class, 'login']);      // checks admin or president
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-
-// API route for mobile (Flutter or similar) to add account
-Route::post('/addacc', [AuthController::class, 'addAccount'])->name('addacc');
-
-
-Route::middleware('auth:sanctum')->post('/addacc', [AuthController::class, 'addAccount'])->name('addacc');
-
-Route::get('/api/announcements', [AnnouncementController::class, 'index']);
-
-Route::get('/announcements', [AnnouncementController::class, 'index']);
-Route::post('/announcements', [AnnouncementController::class, 'store']); // if you want mobile to post too
-
-
-
+// --------------------------------------------
+// ✅ CHARITY
+// --------------------------------------------
+Route::get('/charity', [CharityController::class, 'index']);
+Route::post('/charity/{id}/approve', [CharityController::class, 'approve']);
+Route::post('/charity/{id}/reject', [CharityController::class, 'reject']);
