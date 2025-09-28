@@ -84,9 +84,7 @@ Route::post('/benefits/{id}/toggle-status', [AssistancesController::class, 'togg
     Route::resource('reports', ReportController::class);
     Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::delete('/reports/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');
     Route::get('/reports/download/{id}', [ReportController::class, 'download'])->name('reports.download');
-    Route::get('/reports/{id}/download', [ReportController::class, 'download'])->name('reports.download');
 
 
     // Classifications
