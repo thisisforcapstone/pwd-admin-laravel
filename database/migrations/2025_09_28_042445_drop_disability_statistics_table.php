@@ -9,20 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
-{
-    Schema::table('disability_statistics', function (Blueprint $table) {
-        $table->string('president')->nullable();
-    });
-}
+    public function up(): void
+    {
+        Schema::dropIfExists('disability_statistics');
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('barangays', function (Blueprint $table) {
-            //
+        Schema::create('disability_statistics', function (Blueprint $table) {
+            $table->id();
+            // kung gusto mong ibalik later, lagay mo ulit dito yung dating columns
+            $table->timestamps();
         });
     }
 };
